@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.shl</groupId>
+    <artifactId>demo4shl</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>demo4shl Maven Webapp</name>
+    <!-- FIXME change it to the project's website -->
+    <url>http://www.example.com</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!--<registry_username>freddyshen</registry_username>-->
+        <!--<registry_password>Abc123456</registry_password>-->
+        <!--<registry_url>freddyshen</registry_url>-->
+
+        <registry_username>13524696605</registry_username>
+        <registry_password>Abc123456</registry_password>
+        <registry_url>hub.c.163.com/honglei666</registry_url>
+    </properties>
+
+    <dependencies>
+    </dependencies>
+
+    <build>
+        <finalName>demo4shl</finalName>
+        <!--<pluginManagement>-->
+        <plugins>
+            <!--jib 构建插件-->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <configuration>
+                    <!--base image from：打包docker的基础镜像，默认镜像是：gcr.io/distroless/java ，需要翻墙to：默认push到dockerhub指定仓库credHelper：docker认证，这个就有点复杂了-->
+                    <from>
+                        <!--<image>freddyshen/tomcat8-5-cst:latest</image>-->
+                        <image>hub.c.163.com/public/tomcat:7.0.28</image>
+                        <!--直接指定凭证（替代credHelper）-->
+                        <auth>
+                            <username>${registry_username}</username>
+                            <password>${registry_password}</password>
+                        </auth>
+                        <!--<image>freddyshen/tomcat8-5-cst:latest</image>-->
+                        <!--<credHelper>osxkeychain</credHelper>-->
+                    </from>
+                    <!--目标镜像registry地址，为了方便测试，你需要换成自己的地址-->
+                    <to>
+                        <image>${registry_url}/${project.artifactId}</image>
+                        <tags>
+                            <!--可以做多个tag-->
+                            <tag>latest</tag>
+                            <!--<tag>${project.version}</tag>-->
+                        </tags>
+
+                    </to>
+                    <container>
+                        <!--容器上放置应用程序内容的根目录。特别适用于WAR打包项目，通过指定放置exploded WAR内容的位置来处理不同的Servlet引擎基础映像-->
+                        <appRoot>/usr/local/tomcat/webapps/ROOT</appRoot>
+                        <!--使用当前时间-->
+                        <useCurrentTimestamp>true</useCurrentTimestamp>
+                        <!--容器在运行时暴露的端口-->
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                    </container>
+                    <!--如果私有镜像仓库没有启用https，设置allowInsecureRegistries参数为true-->
+                    <allowInsecureRegistries>false</allowInsecureRegistries>
+                </configuration>
+                <!--绑定jib:build到 Maven生命周期，例如package-->
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>dockerBuild</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <!--</pluginManagement>-->
+    </build>
+</project>
